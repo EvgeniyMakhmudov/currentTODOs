@@ -3,59 +3,23 @@ var window = vscode.window;
 var workspace = vscode.workspace;
 
 
-window.pattern = new RegExp('TODO\:|FIXME\:', 'g');
-DEFAULT_STYLE = {
-    color: "#2196f3",
-    backgroundColor: "#ffeb3b",
-};
-styleForRegExp = Object.assign({}, DEFAULT_STYLE, {}, {
-    overviewRulerLane: vscode.OverviewRulerLane.Right
-});
-customDefaultStyle = {};
-isCaseSensitive = false;
-DEFAULT_KEYWORDS = {
-    "TODO:": {
-        text: "TODO:",
-        color: '#fff',
-        backgroundColor: '#ffbd2a',
-        overviewRulerColor: 'rgba(255,189,42,0.8)'
-    },
-    "FIXME:": {
-        text: "FIXME:",
-        color: '#fff',
-        backgroundColor: '#f06292',
-        overviewRulerColor: 'rgba(240,98,146,0.8)'
-    }
-};
-
-
 function escapeRegExp(s) {
     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
 
-function getAssembledData(keywords, customDefaultStyle, isCaseSensitive) {
+function getAssembledData(keywords, isCaseSensitive) {
     var result = {}
     keywords.forEach((v) => {
-        v = typeof v == 'string' ? { text: v } : v;
-        var text = v.text;
+        let text = v.text;
         if (!text) return;//NOTE: in case of the text is empty
 
         if (!isCaseSensitive) {
             text = text.toUpperCase();
         }
 
-        if (text == 'TODO:' || text == 'FIXME:') {
-            v = Object.assign({}, DEFAULT_KEYWORDS[text], v);
-        }
-        result[text] = Object.assign({}, DEFAULT_STYLE, customDefaultStyle, v);
+        result[text] = v;
     })
-
-    Object.keys(DEFAULT_KEYWORDS).forEach((v) => {
-        if (!result[v]) {
-            result[v] = Object.assign({}, DEFAULT_STYLE, customDefaultStyle, DEFAULT_KEYWORDS[v]);
-        }
-    });
 
     return result;
 }
@@ -69,18 +33,14 @@ function createStatusBarItem() {
 }
 
 function updateDecorations() {
-    console.log('Update Decorations !');
-
     var activeEditor = window.activeTextEditor;
     if (!activeEditor || !activeEditor.document) {
         return;
     }
 
     var text = activeEditor.document.getText();
-    var mathes = {}, match;
+    var matches = {}, match;
     while (match = window.pattern.exec(text)) {
-        console.log(match);
-    
         var startPos = activeEditor.document.positionAt(match.index);
         var endPos = activeEditor.document.positionAt(match.index + match[0].length);
         var decoration = {
@@ -88,37 +48,32 @@ function updateDecorations() {
         };
 
         var matchedValue = match[0];
-        if (mathes[matchedValue]) {
-            mathes[matchedValue].push(decoration);
+        if (matches[matchedValue]) {
+            matches[matchedValue].push(decoration);
         } else {
-            mathes[matchedValue] = [decoration];
-        }
-
-        if (keywordsPattern.join('').trim() && !decorationTypes[matchedValue]) {
-            decorationTypes[matchedValue] = window.createTextEditorDecorationType(styleForRegExp);
+            matches[matchedValue] = [decoration];
         }
     }
     
     var sb_msg = "$(checklist)";
 
-    Object.keys(decorationTypes).forEach((v) => {
-        var rangeOption = settings.get('enable') && mathes[v] ? mathes[v] : [];
-        var decorationType = decorationTypes[v];
+    Object.keys(window.decorationTypes).forEach((v) => {
+        var rangeOption = window.settings.get('enable') && matches[v] ? matches[v] : [];
+        var decorationType = window.decorationTypes[v];
         activeEditor.setDecorations(decorationType, rangeOption);
 
-        if (mathes[v]) {
-            sb_msg = sb_msg + " " + v + mathes[v].length;
+        if (matches[v]) {
+            sb_msg = sb_msg + " " + v + matches[v].length;
         }
     })
 
     window.statusBarItem.text = sb_msg;
     window.statusBarItem.show();
-    console.log('End');
 }
 
 
 function init(settings) {
-    keywordsPattern = settings.get('keywords');
+    let isCaseSensitive = settings.get('isCaseSensitive');
 
     if (!window.statusBarItem) {
         window.statusBarItem = createStatusBarItem();
@@ -127,9 +82,9 @@ function init(settings) {
     //     window.outputChannel = window.createOutputChannel('TodoHighlight');
     // }
 
-    decorationTypes = {};
+    window.decorationTypes = {};
 
-    assembledData = getAssembledData(settings.get('keywords'), customDefaultStyle, isCaseSensitive);
+    let assembledData = getAssembledData(settings.get('keywords'), isCaseSensitive);
     Object.keys(assembledData).forEach((v) => {
         var mergedStyle = Object.assign({}, {
             overviewRulerLane: vscode.OverviewRulerLane.Right
@@ -140,38 +95,37 @@ function init(settings) {
             mergedStyle.overviewRulerColor = mergedStyle.backgroundColor;
         }
 
-        decorationTypes[v] = window.createTextEditorDecorationType(mergedStyle);
+        window.decorationTypes[v] = window.createTextEditorDecorationType(mergedStyle);
     });
 
-    pattern = Object.keys(assembledData).map((v) => {
+   let pattern = Object.keys(assembledData).map((v) => {
         return escapeRegExp(v);
     }).join('|');
 
-    pattern = new RegExp(pattern, 'gi');
     if (isCaseSensitive) {
-        pattern = new RegExp(pattern, 'g');
+        window.pattern = new RegExp(pattern, 'g');
+    } else {
+        window.pattern = new RegExp(pattern, 'gi');
     }
 
 }
 
 function activate(context) {
     console.log('Extension "currenttodos" activated!');
-    settings = workspace.getConfiguration('currenttodos');
+    window.settings = workspace.getConfiguration('currenttodos');
 
-    init(settings);
+    init(window.settings);
     
-    let disposable = vscode.commands.registerCommand('currenttodos.refresh', function () {
-        updateDecorations();
-    });
+    let disposable = vscode.commands.registerCommand('currenttodos.refresh', updateDecorations);
 
     context.subscriptions.push(disposable);
 
     workspace.onDidChangeConfiguration(function () {
-        settings = workspace.getConfiguration('currenttodos');
+        window.settings = workspace.getConfiguration('currenttodos');
 
-        if (!settings.get('enable')) return;
+        if (!window.settings.get('enable')) return;
 
-        init(settings);
+        init(window.settings);
         updateDecorations();
     }, null, context.subscriptions);
 

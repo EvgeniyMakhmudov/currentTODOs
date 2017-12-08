@@ -2,7 +2,7 @@
     "name": "currenttodos",
     "displayName": "currentTODOs",
     "description": "Highligts annotations",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "publisher": "jo",
     "engines": {
         "vscode": "^1.18.0"
@@ -39,32 +39,25 @@
                     "type": "array",
                     "description": "Customize keywords and colors. Any css color identifier is valid.",
                     "items": {
-                        "anyOf": [
-                            {
-                                "type": "string"
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "description": "Custom text to be highlighted"
                             },
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "text": {
-                                        "type": "string",
-                                        "description": "Custom text to be highlighted"
-                                    },
-                                    "color": {
-                                        "type": "string",
-                                        "description": "The text color. Besides, you can play with all the string and boolean styling properties provied by VS Code API. See all available properties: https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-namedecorationrenderoptionsaspan-classcodeitem-id280decorationrenderoptionsspan ."
-                                    },
-                                    "backgroundColor": {
-                                        "type": "string",
-                                        "description": "The text background color. See all available properties: https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-namedecorationrenderoptionsaspan-classcodeitem-id280decorationrenderoptionsspan ."
-                                    },
-                                    "overviewRulerColor": {
-                                        "type": "string",
-                                        "description": "The color of the ruler mark on the scroll bar. Use rgba() and define transparent colors to play well with other decorations. See all available properties: https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-namedecorationrenderoptionsaspan-classcodeitem-id280decorationrenderoptionsspan ."
-                                    }
-                                }
+                            "color": {
+                                "type": "string",
+                                "description": "The text color. Besides, you can play with all the string and boolean styling properties provied by VS Code API. See all available properties: https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-namedecorationrenderoptionsaspan-classcodeitem-id280decorationrenderoptionsspan ."
+                            },
+                            "backgroundColor": {
+                                "type": "string",
+                                "description": "The text background color. See all available properties: https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-namedecorationrenderoptionsaspan-classcodeitem-id280decorationrenderoptionsspan ."
+                            },
+                            "overviewRulerColor": {
+                                "type": "string",
+                                "description": "The color of the ruler mark on the scroll bar. Use rgba() and define transparent colors to play well with other decorations. See all available properties: https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-namedecorationrenderoptionsaspan-classcodeitem-id280decorationrenderoptionsspan ."
                             }
-                        ]
+                        }
                     },
                     "default": [
                         {
