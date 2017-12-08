@@ -2,3 +2,7 @@ node_modules
 .vscode-test/
 .vsix
 .vscode
+
+jsconfig.json
+.eslintrc.json
+vsc-extension-quickstart.md
