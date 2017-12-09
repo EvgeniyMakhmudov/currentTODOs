@@ -2,7 +2,7 @@
     "name": "currenttodos",
     "displayName": "currentTODOs",
     "description": "Highligts annotations",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "publisher": "jo",
     "engines": {
         "vscode": "^1.18.0"
@@ -62,15 +62,21 @@
                     "default": [
                         {
                             "text": "TODO:",
-                            "color": "#fff",
-                            "backgroundColor": "#ffbd2a",
-                            "overviewRulerColor": "rgba(255,189,42,0.8)"
+                            "color": "#FFF",
+                            "backgroundColor": "#E97F02",
+                            "overviewRulerColor": "rgba(233,127,2,0.75)"
                         },
                         {
                             "text": "FIXME:",
-                            "color": "#fff",
-                            "backgroundColor": "#f06292",
-                            "overviewRulerColor": "rgba(240,98,146,0.8)"
+                            "color": "#FFF",
+                            "backgroundColor": "#BD1550",
+                            "overviewRulerColor": "rgba(189,21,80,0.75)"
+                        },
+                        {
+                            "text": "NOTE:",
+                            "color": "#FFF",
+                            "backgroundColor": "#8A9B0F",
+                            "overviewRulerColor": "rgba(138,155,15,0.75)"
                         }
                     ]
                 }
