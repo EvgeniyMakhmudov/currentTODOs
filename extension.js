@@ -130,6 +130,7 @@ function activate(context) {
     }, null, context.subscriptions);
 
     window.onDidChangeActiveTextEditor(updateDecorations);
+    workspace.onDidSaveTextDocument(updateDecorations);
 }
 exports.activate = activate;
 
