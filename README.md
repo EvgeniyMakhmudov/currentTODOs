@@ -2,6 +2,8 @@
 
 Simple vscode extension for hightlights annotations likes TODO, FIXME amd etc in active editor and status bar.
 
+## Example
+![](https://raw.githubusercontent.com/EvgeniyMakhmudov/currentTODOs/master/media/example.gif)
 -----------------------------------------------------------------------------------------------------------
 
 ## Resources
