@@ -35,6 +35,8 @@ function createStatusBarItem() {
 function updateDecorations() {
     var activeEditor = window.activeTextEditor;
     if (!activeEditor || !activeEditor.document) {
+        window.statusBarItem.text = "$(checklist): 0";
+        window.statusBarItem.show();
         return;
     }
 
@@ -55,7 +57,7 @@ function updateDecorations() {
         }
     }
     
-    var sb_msg = "$(checklist)";
+    var sb_msg = "";
 
     Object.keys(window.decorationTypes).forEach((v) => {
         var rangeOption = window.settings.get('enable') && matches[v] ? matches[v] : [];
@@ -66,8 +68,12 @@ function updateDecorations() {
             sb_msg = sb_msg + " " + v + matches[v].length;
         }
     })
-
-    window.statusBarItem.text = sb_msg;
+    if (sb_msg) {
+        window.statusBarItem.text = "$(checklist)" + sb_msg;
+    }
+    else {
+        window.statusBarItem.text = "$(checklist): 0";
+    }
     window.statusBarItem.show();
 }
 
