@@ -1,7 +1,5 @@
 # Change Log
-All notable changes to the "currenttodos" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
-- Initial release
+## [0.1.4] - 2017-12-15
+- First public version
