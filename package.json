@@ -2,7 +2,7 @@
     "name": "currenttodos",
     "displayName": "current TODOs",
     "description": "Highlights and show in status bar annotations like TODO, FIXME and etc",
-    "version": "0.1.5",
+    "version": "0.2",
     "publisher": "MakhmudovEvgeniy",
     "engines": {
         "vscode": "^1.18.0"
